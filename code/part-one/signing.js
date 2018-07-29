@@ -34,7 +34,6 @@ const createPrivateKey = () => {
 const getPublicKey = privateKey => {
   const buf = Buffer.from(privateKey, 'hex');
   const pubKey = secp256k1.publicKeyCreate(buf);
-  console.log('//////', pubKey);
   return pubKey.toString('Hex');
 };
 
@@ -51,9 +50,13 @@ const getPublicKey = privateKey => {
  *   Remember that you need to sign a SHA-256 hash of the message,
  *   not the message itself!
  */
-const sign = (privateKey, message) => {
-  // Your code here
 
+const sign = (privateKey, message) => {
+  const hashMessage = createHash('sha256').update(message, 'utf8').digest();
+  const priKey = Buffer.from(privateKey, 'hex');
+  const msg = Buffer.from(hashMessage, 'hex');
+  const sigObj = secp256k1.sign(msg, priKey);
+  return sigObj.signature.toString('hex');
 };
 
 /**
@@ -67,8 +70,12 @@ const sign = (privateKey, message) => {
  *   // false
  */
 const verify = (publicKey, message, signature) => {
-  // Your code here
-
+  const hashMessage = createHash('sha256').update(message, 'utf8').digest();
+  const msg = Buffer.from(hashMessage, 'hex');
+  const sig = Buffer.from(signature, 'hex');
+  const pubKey = Buffer.from(publicKey, 'hex');
+  console.log(msg)
+  return secp256k1.verify(msg, sig, pubKey)
 };
 
 module.exports = {

@@ -22,8 +22,11 @@ class Transaction {
    *     other properties, signed with the provided private key
    */
   constructor(privateKey, recipient, amount) {
-    // Enter your solution here
-
+    this.source = signing.getPublicKey(privateKey);
+    this.recipient = recipient;
+    this.amount = amount;
+    const sign = this.source + recipient + amount;
+    this.signature = signing.sign(privateKey, sign);
   }
 }
 
@@ -44,8 +47,9 @@ class Block {
    *   - hash: a unique hash string generated from the other properties
    */
   constructor(transactions, previousHash) {
-    // Your code here
-
+    this.transactions = transactions;
+    this.previousHash = previousHash;
+    this.calculateHash(10);
   }
 
   /**
@@ -58,8 +62,11 @@ class Block {
    *   properties change.
    */
   calculateHash(nonce) {
-    // Your code here
+    const transStr = this.transactions.map(transaction => transaction.signature).join('');
+    const hash = this.previousHash + transStr + nonce;
 
+    this.nonce = nonce;
+    this.hash = createHash('sha512').update(hash).digest('hex');
   }
 }
 

@@ -74,7 +74,6 @@ const verify = (publicKey, message, signature) => {
   const msg = Buffer.from(hashMessage, 'hex');
   const sig = Buffer.from(signature, 'hex');
   const pubKey = Buffer.from(publicKey, 'hex');
-  console.log(msg)
   return secp256k1.verify(msg, sig, pubKey)
 };
 
